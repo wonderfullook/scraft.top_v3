@@ -296,10 +296,18 @@ static ssize_t testdev_write(struct file *file, const char *buf, size_t count, l
 }
 
 // 实现设备特有的操作 比如光驱设备实现弹出
+// 不同版本内核 这个叫法不一样 所以根据内核版本编译不同的程序
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 36)
+static long testdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+{
+    return 0;
+}
+#else
 static int testdev_ioctl(struct inode *inode, struct file *file, unsigned int cmd, unsigned long arg)
 {
     return 0;
 }
+#endif
 
 // 定义头文件里声明的结构休变量
 struct file_operations testdev_fops = {
